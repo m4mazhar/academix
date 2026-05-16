@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="layout/base :: html(content = ~{::main})">
+<head><title>Dashboard</title></head>
+<body>
+<main>
+  <div class="row mb-4">
+    <div class="col-md-3">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body">
+          <p class="text-muted small mb-1">Total Students</p>
+          <h3 class="fw-bold text-primary" th:text="${stats.totalStudents}">0</h3>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body">
+          <p class="text-muted small mb-1">Active Batches</p>
+          <h3 class="fw-bold text-success" th:text="${stats.activeBatches}">0</h3>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body">
+          <p class="text-muted small mb-1">Collected This Month</p>
+          <h3 class="fw-bold text-info" th:text="${#numbers.formatCurrency(stats.feeCollectedThisMonth)}">0</h3>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body">
+          <p class="text-muted small mb-1">Pending Fees</p>
+          <h3 class="fw-bold text-warning" th:text="${#numbers.formatCurrency(stats.pendingFees)}">0</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white border-bottom">
+          <h6 class="mb-0">Recent Admissions</h6>
+        </div>
+        <div class="card-body">
+          <table class="table table-sm" th:if="${#lists.size(recentAdmissions) > 0}">
+            <tbody>
+              <tr th:each="s : ${recentAdmissions}">
+                <td><strong th:text="${s.fullName}"></strong></td>
+                <td class="text-end small text-muted" th:text="${#temporals.format(s.admissionDate,'dd MMM yyyy')}"></td>
+              </tr>
+            </tbody>
+          </table>
+          <p th:if="${#lists.isEmpty(recentAdmissions)}" class="text-muted small mb-0">No recent admissions.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white border-bottom">
+          <h6 class="mb-0">Overdue Fees</h6>
+        </div>
+        <div class="card-body">
+          <table class="table table-sm" th:if="${#lists.size(overdueFees) > 0}">
+            <tbody>
+              <tr th:each="f : ${overdueFees}" class="table-danger">
+                <td><strong th:text="${f.student.fullName}"></strong></td>
+                <td class="text-end small" th:text="${#numbers.formatCurrency(f.amount)}"></td>
+              </tr>
+            </tbody>
+          </table>
+          <p th:if="${#lists.isEmpty(overdueFees)}" class="text-muted small mb-0">No overdue fees.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+</body>
+</html>
