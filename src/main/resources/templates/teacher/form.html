@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="layout/base :: html(content = ~{::main})">
+<head><title>Teacher Form</title></head>
+<body>
+<main>
+  <div class="card border-0 shadow-sm" style="max-width:640px">
+    <div class="card-header bg-white fw-semibold border-bottom">
+      <i class="bi bi-person-badge me-2"></i>
+      <span th:text="${teacher.id == null ? 'Add Teacher' : 'Edit Teacher'}"></span>
+    </div>
+    <div class="card-body p-4">
+      <form th:action="${teacher.id != null} ? @{/teachers/{id}/edit(id=${teacher.id})} : @{/teachers/save}"
+            th:object="${teacher}" method="post">
+        <input type="hidden" th:field="*{id}">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">Full Name *</label>
+            <input type="text" th:field="*{fullName}" class="form-control" required
+                   th:classappend="${#fields.hasErrors('fullName')}?' is-invalid':''">
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}"></div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Phone</label>
+            <input type="text" th:field="*{phone}" class="form-control">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Email</label>
+            <input type="email" th:field="*{email}" class="form-control">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Subject</label>
+            <input type="text" th:field="*{subject}" class="form-control">
+          </div>
+          <div class="col-12">
+            <label class="form-label">Qualification</label>
+            <input type="text" th:field="*{qualification}" class="form-control"
+                   placeholder="e.g. MSc Physics, University of Dhaka">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Base Salary (৳) *</label>
+            <input type="number" step="0.01" th:field="*{baseSalary}" class="form-control" required>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Joining Date</label>
+            <input type="date" th:field="*{joiningDate}" class="form-control">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Status</label>
+            <select th:field="*{status}" class="form-select">
+              <option th:each="s : ${T(com.academix.model.enums.TeacherStatus).values()}"
+                      th:value="${s}" th:text="${s}"></option>
+            </select>
+          </div>
+        </div>
+        <div class="mt-4 d-flex gap-2">
+          <button type="submit" class="btn btn-primary">
+            <i class="bi bi-check-circle me-1"></i>Save Teacher
+          </button>
+          <a href="/teachers" class="btn btn-outline-secondary">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</main>
+</body>
+</html>

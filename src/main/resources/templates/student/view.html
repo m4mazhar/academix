@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="layout/base :: html(content = ~{::main})">
+<head><title>Student Profile</title></head>
+<body>
+<main>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h5 class="mb-0"><i class="bi bi-person-circle me-2"></i><span th:text="${student.fullName}"></span></h5>
+    <div class="d-flex gap-2">
+      <a th:href="@{/students/{id}/edit(id=${student.id})}" class="btn btn-sm btn-outline-primary">
+        <i class="bi bi-pencil me-1"></i>Edit
+      </a>
+      <a href="/students" class="btn btn-sm btn-outline-secondary">
+        <i class="bi bi-arrow-left me-1"></i>Back
+      </a>
+    </div>
+  </div>
+
+  <div class="row g-3">
+    <div class="col-md-4">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body text-center p-4">
+          <div class="bg-primary-subtle rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+               style="width:80px;height:80px">
+            <i class="bi bi-person-fill fs-2 text-primary"></i>
+          </div>
+          <h5 class="mb-1" th:text="${student.fullName}"></h5>
+          <p class="text-muted small mb-2" th:text="${student.studentCode}"></p>
+          <span class="badge"
+                th:classappend="${student.status.name() == 'ACTIVE'} ? 'bg-success' : (${student.status.name() == 'GRADUATED'} ? 'bg-info text-dark' : 'bg-secondary')"
+                th:text="${student.status}"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-8">
+      <div class="card border-0 shadow-sm mb-3">
+        <div class="card-header bg-white fw-semibold small border-bottom">Personal Information</div>
+        <div class="card-body">
+          <div class="row g-2 small">
+            <div class="col-6"><span class="text-muted">Phone:</span> <span th:text="${student.phone}"></span></div>
+            <div class="col-6"><span class="text-muted">Date of Birth:</span>
+              <span th:text="${student.dateOfBirth != null ? #temporals.format(student.dateOfBirth,'dd MMM yyyy') : '—'}"></span>
+            </div>
+            <div class="col-6"><span class="text-muted">Guardian:</span> <span th:text="${student.guardianName}"></span></div>
+            <div class="col-6"><span class="text-muted">Guardian Phone:</span> <span th:text="${student.guardianPhone}"></span></div>
+            <div class="col-12"><span class="text-muted">Address:</span> <span th:text="${student.address}"></span></div>
+            <div class="col-6"><span class="text-muted">Admission Date:</span>
+              <span th:text="${student.admissionDate != null ? #temporals.format(student.admissionDate,'dd MMM yyyy') : '—'}"></span>
+            </div>
+            <div class="col-6"><span class="text-muted">Batch:</span>
+              <span th:text="${student.batch != null ? student.batch.batchName : '—'}"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white fw-semibold small border-bottom">Fee History</div>
+        <div class="card-body p-0">
+          <table class="table table-sm table-hover mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>Receipt#</th><th>Month/Year</th><th>Amount</th><th>Mode</th><th>Status</th><th>Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="fp : ${student.feePayments}">
+                <td class="small text-muted" th:text="${fp.receiptNumber}"></td>
+                <td th:text="${fp.month + '/' + fp.year}"></td>
+                <td th:text="'৳ ' + ${fp.amount}"></td>
+                <td th:text="${fp.paymentMode}"></td>
+                <td>
+                  <span class="badge"
+                        th:classappend="${fp.status.name()=='PAID'}?'bg-success':(${fp.status.name()=='PENDING'}?'bg-warning text-dark':'bg-danger')"
+                        th:text="${fp.status}"></span>
+                </td>
+                <td th:text="${fp.paidDate}"></td>
+              </tr>
+              <tr th:if="${#lists.isEmpty(student.feePayments)}">
+                <td colspan="6" class="text-center text-muted py-2">No fee records found.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+</body>
+</html>

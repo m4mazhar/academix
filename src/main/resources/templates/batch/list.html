@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="layout/base :: html(content = ~{::main})">
+<head><title>Batches</title></head>
+<body>
+<main>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h5 class="mb-0"><i class="bi bi-calendar3 me-2"></i>Batches</h5>
+    <a href="/batches/new" class="btn btn-primary btn-sm">
+      <i class="bi bi-plus-lg me-1"></i>New Batch
+    </a>
+  </div>
+
+  <div class="row g-3">
+    <div class="col-md-4 col-lg-3" th:each="batch : ${batches}">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            <h6 class="mb-0 fw-semibold" th:text="${batch.batchName}"></h6>
+            <span class="badge"
+                  th:classappend="${batch.status.name()=='ACTIVE'}?'bg-success':(${batch.status.name()=='UPCOMING'}?'bg-info text-dark':'bg-secondary')"
+                  th:text="${batch.status}"></span>
+          </div>
+          <p class="text-muted small mb-1">
+            <i class="bi bi-book me-1"></i><span th:text="${batch.subject != null ? batch.subject : '—'}"></span>
+          </p>
+          <p class="text-muted small mb-1">
+            <i class="bi bi-person me-1"></i>
+            <span th:text="${batch.teacher != null ? batch.teacher.fullName : 'No teacher assigned'}"></span>
+          </p>
+          <p class="text-muted small mb-1">
+            <i class="bi bi-clock me-1"></i><span th:text="${batch.schedule != null ? batch.schedule : '—'}"></span>
+          </p>
+          <p class="text-muted small mb-1">
+            <i class="bi bi-people me-1"></i>
+            <span th:text="${#lists.size(batch.students) + ' / ' + (batch.capacity != null ? batch.capacity : '∞') + ' students'}"></span>
+          </p>
+          <p class="fw-semibold text-primary small mb-0">
+            ৳ <span th:text="${batch.monthlyFee}"></span>/month
+          </p>
+        </div>
+        <div class="card-footer bg-transparent border-top-0 pt-0">
+          <a th:href="@{/batches/{id}/edit(id=${batch.id})}" class="btn btn-sm btn-outline-primary w-100">
+            <i class="bi bi-pencil me-1"></i>Edit
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 text-center py-5 text-muted" th:if="${#lists.isEmpty(batches)}">
+      <i class="bi bi-calendar-x fs-2 d-block mb-2"></i>
+      No batches found. <a href="/batches/new">Create your first batch.</a>
+    </div>
+  </div>
+</main>
+</body>
+</html>

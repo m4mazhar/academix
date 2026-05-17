@@ -66,8 +66,15 @@ public class BranchAdminController {
 
     @GetMapping("/{id}/users")
     public String users(@PathVariable Long id, Model model) {
-        model.addAttribute("branch", branchService.findById(id));
-        model.addAttribute("allUsers", userService.findAll());
+        Branch branch = branchService.findById(id);
+        java.util.List<User> allUsers = userService.findAll();
+        java.util.List<UserBranchRole> branchUsers = allUsers.stream()
+            .flatMap(u -> u.getBranchRoles().stream())
+            .filter(ubr -> ubr.getBranch() != null && ubr.getBranch().getId().equals(id))
+            .collect(java.util.stream.Collectors.toList());
+        model.addAttribute("branch", branch);
+        model.addAttribute("allUsers", allUsers);
+        model.addAttribute("branchUsers", branchUsers);
         model.addAttribute("roles", BranchRole.values());
         model.addAttribute("pageTitle", "Branch Users");
         model.addAttribute("activeMenu", "branches");

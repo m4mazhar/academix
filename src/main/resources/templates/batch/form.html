@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="layout/base :: html(content = ~{::main})">
+<head><title>Batch Form</title></head>
+<body>
+<main>
+  <div class="card border-0 shadow-sm" style="max-width:680px">
+    <div class="card-header bg-white fw-semibold border-bottom">
+      <i class="bi bi-calendar3 me-2"></i>
+      <span th:text="${batch.id == null ? 'Create Batch' : 'Edit Batch'}"></span>
+    </div>
+    <div class="card-body p-4">
+      <form th:action="${batch.id != null} ? @{/batches/{id}/edit(id=${batch.id})} : @{/batches/save}"
+            th:object="${batch}" method="post">
+        <input type="hidden" th:field="*{id}">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">Batch Code *</label>
+            <input type="text" th:field="*{batchCode}" class="form-control" placeholder="e.g. HSC-SCI-A" required
+                   th:classappend="${#fields.hasErrors('batchCode')}?' is-invalid':''">
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('batchCode')}" th:errors="*{batchCode}"></div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Batch Name *</label>
+            <input type="text" th:field="*{batchName}" class="form-control" placeholder="e.g. HSC Science Morning" required
+                   th:classappend="${#fields.hasErrors('batchName')}?' is-invalid':''">
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('batchName')}" th:errors="*{batchName}"></div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Subject</label>
+            <input type="text" th:field="*{subject}" class="form-control" placeholder="e.g. Physics">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Schedule</label>
+            <input type="text" th:field="*{schedule}" class="form-control" placeholder="e.g. Mon/Wed/Fri 7:00–9:00am">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Capacity</label>
+            <input type="number" th:field="*{capacity}" class="form-control" min="1" placeholder="Max students">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Monthly Fee (৳) *</label>
+            <input type="number" step="0.01" th:field="*{monthlyFee}" class="form-control" required>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Status</label>
+            <select th:field="*{status}" class="form-select">
+              <option th:each="s : ${T(com.academix.model.enums.BatchStatus).values()}"
+                      th:value="${s}" th:text="${s}"></option>
+            </select>
+          </div>
+          <div class="col-12">
+            <label class="form-label">Teacher</label>
+            <select name="teacherId" class="form-select">
+              <option value="">-- No Teacher --</option>
+              <option th:each="t : ${teachers}" th:value="${t.id}"
+                      th:text="${t.fullName + ' (' + (t.subject != null ? t.subject : 'N/A') + ')'}"
+                      th:selected="${batch.teacher != null && batch.teacher.id == t.id}"></option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Start Date</label>
+            <input type="date" th:field="*{startDate}" class="form-control">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">End Date</label>
+            <input type="date" th:field="*{endDate}" class="form-control">
+          </div>
+        </div>
+        <div class="mt-4 d-flex gap-2">
+          <button type="submit" class="btn btn-primary">
+            <i class="bi bi-check-circle me-1"></i>Save Batch
+          </button>
+          <a href="/batches" class="btn btn-outline-secondary">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</main>
+</body>
+</html>

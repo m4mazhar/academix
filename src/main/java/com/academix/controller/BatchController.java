@@ -5,6 +5,7 @@ import com.academix.service.BatchService;
 import com.academix.service.BranchService;
 import com.academix.service.TeacherService;
 import com.academix.model.Batch;
+import com.academix.repository.TeacherRepository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -21,6 +22,7 @@ public class BatchController {
     private final TeacherService teacherService;
     private final BranchService branchService;
     private final BranchContext branchContext;
+    private final TeacherRepository teacherRepository;
 
     @GetMapping
     public String list(Model model) {
@@ -40,9 +42,14 @@ public class BatchController {
     }
 
     @PostMapping("/save")
-    public String save(@ModelAttribute Batch batch, RedirectAttributes ra) {
+    public String save(@ModelAttribute Batch batch,
+                       @RequestParam(required = false) Long teacherId,
+                       RedirectAttributes ra) {
         Long branchId = branchContext.getActiveBranchId();
         batch.setBranch(branchService.findById(branchId));
+        if (teacherId != null) {
+            batch.setTeacher(teacherRepository.findById(teacherId).orElse(null));
+        }
         batchService.save(batch);
         ra.addFlashAttribute("success", "Batch saved successfully.");
         return "redirect:/batches";
@@ -58,8 +65,14 @@ public class BatchController {
     }
 
     @PostMapping("/{id}/edit")
-    public String update(@PathVariable Long id, @ModelAttribute Batch batch, RedirectAttributes ra) {
+    public String update(@PathVariable Long id,
+                         @ModelAttribute Batch batch,
+                         @RequestParam(required = false) Long teacherId,
+                         RedirectAttributes ra) {
         batch.setId(id);
+        if (teacherId != null) {
+            batch.setTeacher(teacherRepository.findById(teacherId).orElse(null));
+        }
         batchService.save(batch);
         ra.addFlashAttribute("success", "Batch updated successfully.");
         return "redirect:/batches";

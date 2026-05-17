@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="layout/base :: html(content = ~{::main})">
+<head><title>Financial Report</title></head>
+<body>
+<main>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h5 class="mb-0"><i class="bi bi-receipt me-2"></i>Financial Report (P&amp;L)</h5>
+    <div class="d-flex gap-1">
+      <a href="/reports/financial/export?format=pdf" class="btn btn-sm btn-outline-danger">
+        <i class="bi bi-file-earmark-pdf me-1"></i>PDF
+      </a>
+      <a href="/reports/financial/export?format=xlsx" class="btn btn-sm btn-outline-success">
+        <i class="bi bi-file-earmark-excel me-1"></i>Excel
+      </a>
+      <a href="/reports" class="btn btn-sm btn-outline-secondary">
+        <i class="bi bi-arrow-left me-1"></i>Back
+      </a>
+    </div>
+  </div>
+
+  <form th:action="@{/reports/financial}" method="get" class="row g-2 mb-3">
+    <div class="col-md-2">
+      <select name="month" class="form-select">
+        <option value="0">All Months</option>
+        <option th:each="m : ${#numbers.sequence(1,12)}" th:value="${m}"
+                th:text="${#calendars.format(#calendars.create(2000,m,1),'MMMM')}"
+                th:selected="${param.month != null && param.month[0] == m.toString()}"></option>
+      </select>
+    </div>
+    <div class="col-md-2">
+      <input type="number" name="year" class="form-control" placeholder="Year"
+             th:value="${param.year}">
+    </div>
+    <div class="col-md-2">
+      <button type="submit" class="btn btn-outline-secondary w-100">Filter</button>
+    </div>
+  </form>
+
+  <div th:if="${summary != null}" class="row g-3 mb-4">
+    <div class="col-md-4">
+      <div class="card border-0 shadow-sm border-start border-success border-4">
+        <div class="card-body">
+          <p class="text-muted small mb-1">Total Income (Fees Collected)</p>
+          <h3 class="fw-bold text-success mb-0">
+            ৳ <span th:text="${summary.totalFeeCollected}"></span>
+          </h3>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card border-0 shadow-sm border-start border-danger border-4">
+        <div class="card-body">
+          <p class="text-muted small mb-1">Total Expenditure</p>
+          <h3 class="fw-bold text-danger mb-0">
+            ৳ <span th:text="${summary.totalExpenditure}"></span>
+          </h3>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card border-0 shadow-sm border-start border-primary border-4">
+        <div class="card-body">
+          <p class="text-muted small mb-1">Net Profit / Loss</p>
+          <h3 class="fw-bold mb-0"
+              th:classappend="${summary.netBalance != null && summary.netBalance.compareTo(T(java.math.BigDecimal).ZERO) >= 0} ? ' text-success' : ' text-danger'"
+              th:text="'৳ ' + ${summary.netBalance}">৳ 0</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="alert alert-info small" th:if="${summary == null}">
+    <i class="bi bi-info-circle me-1"></i>
+    Select a period above to view the financial summary.
+  </div>
+</main>
+</body>
+</html>

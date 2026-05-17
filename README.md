@@ -22,7 +22,7 @@ A **complete multi-branch coaching center management platform** built with Sprin
 ### Development (PostgreSQL local)
 ```bash
 # Create dev database first
-createdb edumerge_dev
+createdb academix
 
 # Run with dev profile
 ./mvnw spring-boot:run -Dspring-boot.run.profiles=dev

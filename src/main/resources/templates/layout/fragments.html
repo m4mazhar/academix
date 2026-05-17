@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+  <!--/*
+    Common reusable fragments for Academix templates.
+    Usage: th:replace="layout/fragments :: statusBadge(${entity.status})"
+  */-->
+
+  <!-- Generic status badge -->
+  <span th:fragment="statusBadge(status)"
+        class="badge"
+        th:classappend="${status.name()=='ACTIVE'}?'bg-success':(${status.name()=='INACTIVE'}?'bg-secondary':'bg-warning text-dark')"
+        th:text="${status}"></span>
+
+  <!-- Pagination fragment -->
+  <nav th:fragment="pagination(page, baseUrl)" aria-label="Pagination" class="mt-3">
+    <ul class="pagination pagination-sm justify-content-end">
+      <li class="page-item" th:classappend="${page.first}?' disabled':''">
+        <a class="page-link" th:href="@{${baseUrl}(page=${page.number - 1})}">«</a>
+      </li>
+      <li class="page-item" th:each="i : ${#numbers.sequence(0, page.totalPages - 1)}"
+          th:classappend="${i == page.number}?' active':''">
+        <a class="page-link" th:href="@{${baseUrl}(page=${i})}" th:text="${i + 1}">1</a>
+      </li>
+      <li class="page-item" th:classappend="${page.last}?' disabled':''">
+        <a class="page-link" th:href="@{${baseUrl}(page=${page.number + 1})}">»</a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Empty state message -->
+  <div th:fragment="emptyState(icon, message)" class="text-center py-5 text-muted">
+    <i th:class="'bi ' + ${icon} + ' fs-2 d-block mb-2'"></i>
+    <p class="mb-0" th:text="${message}"></p>
+  </div>
+
+  <!-- Export buttons -->
+  <div th:fragment="exportButtons(type)" class="d-flex gap-1">
+    <a th:href="@{'/reports/' + ${type} + '/export'}(format='pdf')" class="btn btn-sm btn-outline-danger">
+      <i class="bi bi-file-earmark-pdf me-1"></i>PDF
+    </a>
+    <a th:href="@{'/reports/' + ${type} + '/export'}(format='xlsx')" class="btn btn-sm btn-outline-success">
+      <i class="bi bi-file-earmark-excel me-1"></i>Excel
+    </a>
+  </div>
+</body>
+</html>

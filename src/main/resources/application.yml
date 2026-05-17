@@ -2,6 +2,9 @@ spring:
   application:
     name: edumerge
 
+  profiles:
+    active: dev
+
   # ── Jackson ─────────────────────────────────────────────────────
   jackson:
     serialization:

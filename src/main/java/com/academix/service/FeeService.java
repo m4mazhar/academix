@@ -48,12 +48,14 @@ public class FeeService {
     }
 
     public BigDecimal totalPending(Long branchId) {
+        if (branchId == null) return BigDecimal.ZERO;
         return feePaymentRepository.findByBranchIdAndStatus(branchId, FeeStatus.PENDING)
                 .stream().map(FeePayment::getAmount)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     public List<FeePayment> getOverdueFees(Long branchId) {
+        if (branchId == null) return List.of();
         return feePaymentRepository.findByBranchIdAndStatus(branchId, FeeStatus.OVERDUE);
     }
 

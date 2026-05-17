@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="layout/base :: html(content = ~{::main})">
+<head><title>Cross-Branch Report</title></head>
+<body>
+<main>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h5 class="mb-0"><i class="bi bi-buildings me-2"></i>Cross-Branch Comparison</h5>
+    <div class="d-flex gap-1">
+      <a href="/reports/cross-branch/export?format=pdf" class="btn btn-sm btn-outline-danger">
+        <i class="bi bi-file-earmark-pdf me-1"></i>PDF
+      </a>
+      <a href="/reports/cross-branch/export?format=xlsx" class="btn btn-sm btn-outline-success">
+        <i class="bi bi-file-earmark-excel me-1"></i>Excel
+      </a>
+      <a href="/reports" class="btn btn-sm btn-outline-secondary">
+        <i class="bi bi-arrow-left me-1"></i>Back
+      </a>
+    </div>
+  </div>
+
+  <form th:action="@{/reports/cross-branch}" method="get" class="row g-2 mb-3">
+    <div class="col-md-2">
+      <select name="month" class="form-select">
+        <option value="">All Months</option>
+        <option th:each="m : ${#numbers.sequence(1,12)}" th:value="${m}"
+                th:text="${#calendars.format(#calendars.create(2000,m,1),'MMMM')}"
+                th:selected="${param.month != null && param.month[0] == m.toString()}"></option>
+      </select>
+    </div>
+    <div class="col-md-2">
+      <input type="number" name="year" class="form-control" placeholder="Year"
+             th:value="${param.year}">
+    </div>
+    <div class="col-md-2">
+      <button type="submit" class="btn btn-outline-secondary w-100">
+        <i class="bi bi-bar-chart me-1"></i>Compare
+      </button>
+    </div>
+  </form>
+
+  <div class="card border-0 shadow-sm">
+    <div class="card-body p-0">
+      <table class="table table-hover mb-0">
+        <thead class="table-light">
+          <tr>
+            <th>Branch</th><th>Students</th><th>Batches</th><th>Teachers</th>
+            <th>Fee Collected</th><th>Expenditure</th><th>Net Balance</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="s : ${summaries}">
+            <td class="fw-semibold" th:text="${s.branchName}">
+              <small class="text-muted d-block" th:text="${s.branchCode}"></small>
+            </td>
+            <td th:text="${s.totalStudents}"></td>
+            <td th:text="${s.activeBatches}"></td>
+            <td th:text="${s.totalTeachers}"></td>
+            <td class="text-success fw-semibold" th:text="'৳ ' + ${s.feeCollected}"></td>
+            <td class="text-danger" th:text="'৳ ' + ${s.totalExpenditure}"></td>
+            <td class="fw-bold"
+                th:classappend="${s.netBalance != null && s.netBalance.compareTo(T(java.math.BigDecimal).ZERO) >= 0} ? ' text-success' : ' text-danger'"
+                th:text="'৳ ' + ${s.netBalance}"></td>
+          </tr>
+          <tr th:if="${#lists.isEmpty(summaries)}">
+            <td colspan="7" class="text-center text-muted py-3">No branch data available.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
+</body>
+</html>

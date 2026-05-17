@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="layout/base :: html(content = ~{::main})">
+<head><title>Payroll</title></head>
+<body>
+<main>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h5 class="mb-0"><i class="bi bi-cash-stack me-2"></i>Payroll</h5>
+    <div class="d-flex gap-2">
+      <a href="/payroll/run" class="btn btn-primary btn-sm">
+        <i class="bi bi-play-fill me-1"></i>Run Payroll
+      </a>
+      <a href="/payroll/export" class="btn btn-outline-success btn-sm">
+        <i class="bi bi-file-earmark-excel me-1"></i>Export Excel
+      </a>
+    </div>
+  </div>
+
+  <div class="card border-0 shadow-sm">
+    <div class="card-body">
+      <form th:action="@{/payroll}" method="get" class="row g-2 mb-3">
+        <div class="col-md-3">
+          <select name="month" class="form-select">
+            <option value="">All Months</option>
+            <option th:each="m : ${#numbers.sequence(1,12)}" th:value="${m}"
+                    th:text="${#calendars.format(#calendars.create(2000,m,1),'MMMM')}"
+                    th:selected="${param.month != null && param.month[0] == m.toString()}"></option>
+          </select>
+        </div>
+        <div class="col-md-2">
+          <input type="number" name="year" class="form-control" placeholder="Year"
+                 th:value="${param.year}">
+        </div>
+        <div class="col-md-2">
+          <button type="submit" class="btn btn-outline-secondary w-100">Filter</button>
+        </div>
+      </form>
+
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead class="table-light">
+            <tr>
+              <th>Teacher</th><th>Month/Year</th><th>Base Salary</th>
+              <th>Bonus</th><th>Deduction</th><th>Net Pay</th><th>Status</th><th>Disbursed</th><th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="p : ${entries}">
+              <td class="fw-semibold" th:text="${p.teacher.fullName}"></td>
+              <td th:text="${p.month + '/' + p.year}"></td>
+              <td th:text="'৳ ' + ${p.baseSalary}"></td>
+              <td th:text="'৳ ' + ${p.bonus}"></td>
+              <td th:text="'৳ ' + ${p.deduction}"></td>
+              <td class="fw-bold text-primary" th:text="'৳ ' + ${p.netPay}"></td>
+              <td>
+                <span class="badge"
+                      th:classappend="${p.status.name()=='DISBURSED'}?'bg-success':'bg-warning text-dark'"
+                      th:text="${p.status}"></span>
+              </td>
+              <td th:text="${p.disbursedDate}"></td>
+              <td>
+                <form th:if="${p.status.name()=='PENDING'}"
+                      th:action="@{/payroll/{id}/disburse(id=${p.id})}" method="post" class="d-inline">
+                  <button type="submit" class="btn btn-sm btn-outline-success">Disburse</button>
+                </form>
+              </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(entries)}">
+              <td colspan="9" class="text-center text-muted py-3">
+                No payroll records. <a href="/payroll/run">Run payroll</a> to generate entries.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</main>
+</body>
+</html>

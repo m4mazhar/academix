@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="layout/base :: html(content = ~{::main})">
+<head><title>Fee Receipt</title></head>
+<body>
+<main>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h5 class="mb-0"><i class="bi bi-receipt me-2"></i>Fee Receipt</h5>
+    <div class="d-flex gap-2">
+      <a th:href="@{/fees/receipt/{id}/pdf(id=${fee.id})}" class="btn btn-sm btn-outline-danger">
+        <i class="bi bi-file-earmark-pdf me-1"></i>Download PDF
+      </a>
+      <button onclick="window.print()" class="btn btn-sm btn-outline-secondary">
+        <i class="bi bi-printer me-1"></i>Print
+      </button>
+      <a href="/fees" class="btn btn-sm btn-outline-secondary">
+        <i class="bi bi-arrow-left me-1"></i>Back
+      </a>
+    </div>
+  </div>
+
+  <div class="card border-0 shadow-sm" style="max-width:480px;margin:0 auto">
+    <div class="card-body p-4">
+      <div class="text-center mb-4">
+        <h5 class="fw-bold mb-1">
+          <i class="bi bi-mortarboard-fill text-primary me-2"></i>Academix
+        </h5>
+        <p class="text-muted small mb-0" th:text="${fee.branch.branchName}"></p>
+        <hr class="my-3">
+        <h6 class="fw-semibold text-uppercase" style="letter-spacing:.5px">Fee Receipt</h6>
+        <p class="text-muted small mb-0">
+          Receipt# <strong th:text="${fee.receiptNumber}"></strong>
+        </p>
+      </div>
+
+      <table class="table table-sm table-borderless mb-0">
+        <tr>
+          <td class="text-muted" style="width:40%">Student</td>
+          <td class="fw-semibold" th:text="${fee.student.fullName}"></td>
+        </tr>
+        <tr>
+          <td class="text-muted">Student Code</td>
+          <td th:text="${fee.student.studentCode}"></td>
+        </tr>
+        <tr>
+          <td class="text-muted">Batch</td>
+          <td th:text="${fee.batch != null ? fee.batch.batchName : '—'}"></td>
+        </tr>
+        <tr>
+          <td class="text-muted">Period</td>
+          <td th:text="${fee.month + '/' + fee.year}"></td>
+        </tr>
+        <tr class="border-top">
+          <td class="text-muted">Amount</td>
+          <td class="fw-bold text-success fs-5" th:text="'৳ ' + ${fee.amount}"></td>
+        </tr>
+        <tr>
+          <td class="text-muted">Payment Mode</td>
+          <td th:text="${fee.paymentMode}"></td>
+        </tr>
+        <tr>
+          <td class="text-muted">Date</td>
+          <td th:text="${fee.paidDate != null ? #temporals.format(fee.paidDate,'dd MMM yyyy') : '—'}"></td>
+        </tr>
+        <tr>
+          <td class="text-muted">Status</td>
+          <td><span class="badge bg-success" th:text="${fee.status}"></span></td>
+        </tr>
+        <tr th:if="${fee.notes != null and !#strings.isEmpty(fee.notes)}">
+          <td class="text-muted">Notes</td>
+          <td th:text="${fee.notes}"></td>
+        </tr>
+      </table>
+
+      <div class="text-center mt-3 pt-3 border-top small text-muted">
+        Thank you for your payment!
+      </div>
+    </div>
+  </div>
+</main>
+</body>
+</html>

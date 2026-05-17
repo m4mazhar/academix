@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="layout/base :: html(content = ~{::main})">
+<head><title>Record Payment</title></head>
+<body>
+<main>
+  <div class="card border-0 shadow-sm" style="max-width:600px">
+    <div class="card-header bg-white fw-semibold border-bottom">
+      <i class="bi bi-coin me-2"></i>Record Fee Payment
+    </div>
+    <div class="card-body p-4">
+      <form th:action="@{/fees/save}" th:object="${fee}" method="post">
+        <div class="row g-3">
+          <div class="col-12">
+            <label class="form-label">Student *</label>
+            <select th:field="*{studentId}" class="form-select" required>
+              <option value="">-- Select Student --</option>
+              <option th:each="s : ${students}" th:value="${s.id}"
+                      th:text="${s.fullName + ' (' + s.studentCode + ')'}"></option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Batch *</label>
+            <select th:field="*{batchId}" class="form-select" required>
+              <option value="">-- Select Batch --</option>
+              <option th:each="b : ${batches}" th:value="${b.id}" th:text="${b.batchName}"></option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Month *</label>
+            <select th:field="*{month}" class="form-select" required>
+              <option value="">Month</option>
+              <option th:each="m : ${#numbers.sequence(1,12)}" th:value="${m}"
+                      th:text="${#calendars.format(#calendars.create(2000,m,1),'MMMM')}"></option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Year *</label>
+            <input type="number" th:field="*{year}" class="form-control" required min="2020" max="2099">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Amount (৳) *</label>
+            <input type="number" step="0.01" th:field="*{amount}" class="form-control" required>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Payment Mode</label>
+            <select th:field="*{paymentMode}" class="form-select">
+              <option th:each="pm : ${T(com.academix.model.enums.PaymentMode).values()}"
+                      th:value="${pm}" th:text="${pm}"></option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Payment Date *</label>
+            <input type="date" th:field="*{paidDate}" class="form-control" required>
+          </div>
+          <div class="col-12">
+            <label class="form-label">Notes</label>
+            <input type="text" th:field="*{notes}" class="form-control" placeholder="Optional notes">
+          </div>
+        </div>
+        <div class="mt-4 d-flex gap-2">
+          <button type="submit" class="btn btn-primary">
+            <i class="bi bi-check-circle me-1"></i>Save Payment
+          </button>
+          <a href="/fees" class="btn btn-outline-secondary">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</main>
+</body>
+</html>

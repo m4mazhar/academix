@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="layout/base :: html(content = ~{::main})">
+<head><title>Expenditure</title></head>
+<body>
+<main>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h5 class="mb-0"><i class="bi bi-receipt me-2"></i>Expenditure</h5>
+    <a href="/expenditures/new" class="btn btn-primary btn-sm">
+      <i class="bi bi-plus-lg me-1"></i>Add Expense
+    </a>
+  </div>
+
+  <div class="card border-0 shadow-sm">
+    <div class="card-body">
+      <form th:action="@{/expenditures}" method="get" class="row g-2 mb-3">
+        <div class="col-md-3">
+          <select name="category" class="form-select">
+            <option value="">All Categories</option>
+            <option th:each="c : ${T(com.academix.model.enums.ExpenseCategory).values()}"
+                    th:value="${c}" th:text="${c}"
+                    th:selected="${param.category != null && param.category[0] == c.name()}"></option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <input type="month" name="period" class="form-control"
+                 th:value="${param.period != null ? param.period[0] : ''}">
+        </div>
+        <div class="col-md-2">
+          <button type="submit" class="btn btn-outline-secondary w-100">Filter</button>
+        </div>
+      </form>
+
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead class="table-light">
+            <tr>
+              <th>Date</th><th>Description</th><th>Category</th>
+              <th>Amount</th><th>Paid To</th><th>Voucher#</th><th>Approved By</th><th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="e : ${expenditures}">
+              <td th:text="${e.date}"></td>
+              <td th:text="${e.description}"></td>
+              <td><span class="badge bg-secondary" th:text="${e.category}"></span></td>
+              <td class="fw-semibold" th:text="'৳ ' + ${e.amount}"></td>
+              <td th:text="${e.paidTo}"></td>
+              <td><small class="text-muted" th:text="${e.voucherNumber}"></small></td>
+              <td th:text="${e.approvedBy}"></td>
+              <td class="text-end">
+                <a th:href="@{/expenditures/{id}/edit(id=${e.id})}" class="btn btn-sm btn-outline-primary">Edit</a>
+              </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(expenditures)}">
+              <td colspan="8" class="text-center text-muted py-3">No expenditure records found.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</main>
+</body>
+</html>
