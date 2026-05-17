@@ -1,38 +1,133 @@
-HELP.md
+# ============================================================
+#  Academix — .gitignore
+#  Spring Boot · Maven · STS (Spring Tool Suite) · Java 17
+# ============================================================
+
+
+# ── Compiled Output ────────────────────────────────────────
 target/
-.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
+*.class
+*.jar
+*.war
+*.ear
+*.nar
 
-### STS ###
-.apt_generated
+
+# ── STS / Eclipse IDE ──────────────────────────────────────
 .classpath
-.factorypath
 .project
-.settings
+.settings/
 .springBeans
-.sts4-cache
+.sts4-cache/
+*.launch
+bin/
 
-### IntelliJ IDEA ###
-.idea
-*.iws
+
+# ── IntelliJ IDEA (in case team uses mixed IDEs) ──────────
+.idea/
 *.iml
+*.iws
 *.ipr
+out/
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
 
-### VS Code ###
-.vscode/
+# ── Maven ──────────────────────────────────────────────────
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+!.mvn/wrapper/maven-wrapper.properties
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
 
-### Logs ###
+
+# ── Spring Boot ────────────────────────────────────────────
+spring-shell.log
+
+
+# ── Application Properties (sensitive — never commit) ──────
+src/main/resources/application-prod.properties
+src/main/resources/application-staging.properties
+
+# Keep these in git (safe, no secrets)
+!src/main/resources/application.properties
+!src/main/resources/application-dev.properties
+
+
+# ── Logs ──────────────────────────────────────────────────
 logs/
 *.log
-*.log.*.gz
+*.log.*
+log/
+
+
+# ── File Uploads (runtime data) ───────────────────────────
+uploads/
+
+
+# ── H2 Database files (if file-based H2 used) ─────────────
+*.db
+*.mv.db
+*.trace.db
+
+
+# ── OS Files ──────────────────────────────────────────────
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+
+
+# ── Environment / Secrets ─────────────────────────────────
+.env
+.env.*
+*.env
+secrets.properties
+secrets.yml
+
+
+# ── Node (if any frontend tooling) ────────────────────────
+node_modules/
+npm-debug.log*
+yarn-error.log*
+
+
+# ── Test Output ────────────────────────────────────────────
+test-output/
+surefire-reports/
+failsafe-reports/
+
+
+# ── Code Coverage ─────────────────────────────────────────
+.jacoco/
+jacoco.exec
+
+
+# ── SonarQube ─────────────────────────────────────────────
+.sonar/
+.sonarqube/
+
+
+# ── Docker ────────────────────────────────────────────────
+docker-compose.override.yml
+
+
+# ── Temporary Files ───────────────────────────────────────
+*.tmp
+*.swp
+*.swo
+*.bak
+*.orig
